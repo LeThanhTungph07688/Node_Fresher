@@ -59,4 +59,9 @@ const deleteProject = async (req, res) => {
 //         })
 // }
 
-module.exports = { createProject, getProject, editProject, deleteProject };
+module.exports = {
+    createProject,
+    getProject,
+    editProject,
+    deleteProject
+};

@@ -4,6 +4,8 @@ const Tech_Stack = require('./Tech_Stack');
 const Schema = mongoose.Schema;
 
 const DepartmentSchema = new Schema({
+    name: String,
+    description: String,
     mission: String,
     tech_stack: [{ type: Schema.Types.ObjectId, ref: Tech_Stack }],
     staff: [{ type: Schema.Types.ObjectId, ref: Staff }],

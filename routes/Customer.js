@@ -5,10 +5,12 @@ const { createCustomer,
     deleteCustomer,
     searchCustomer } = require('../controller/CustomerController');
 
-router.post('/customer', createCustomer);
-router.put('/customer/:id', editCustomer);
-router.delete('/customer/:id', deleteCustomer);
-router.get('/customer', searchCustomer);
+// router.use(require('../middleware/tokenChecker'));
+
+router.post('/customers', createCustomer);
+router.put('/customers/:id', editCustomer);
+router.delete('/customers/:id', deleteCustomer);
+router.get('/customers', searchCustomer);
 
 
 module.exports = router;

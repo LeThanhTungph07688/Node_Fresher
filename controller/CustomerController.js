@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 
 
 const createCustomer = async (req, res) => {
-    console.log(req.body);
-    const record = await Customer.create({ ...req.body })
-    res.json({ record })
+    try {
+        const record = await Customer.create({ ...req.body })
+        res.status(200).json(record);
+    } catch (error) {
+        res.status(err.status).json(err);
+    }
+
 }
 
 const editCustomer = async (req, res) => {
@@ -29,4 +33,9 @@ const searchCustomer = async (req, res) => {
         })
 }
 
-module.exports = { createCustomer, editCustomer, deleteCustomer, searchCustomer };
+module.exports = {
+    createCustomer,
+    editCustomer,
+    deleteCustomer,
+    searchCustomer
+};

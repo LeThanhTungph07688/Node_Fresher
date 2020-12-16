@@ -51,4 +51,10 @@ const searchDepartment = async (req, res) => {
         })
 }
 
-module.exports = { createDepartment, editDepartment, deleteDepartment, searchDepartment, getDepartment };
+module.exports = {
+    createDepartment,
+    editDepartment,
+    deleteDepartment,
+    searchDepartment,
+    getDepartment
+};

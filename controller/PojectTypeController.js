@@ -28,4 +28,9 @@ const searchProjectType = async (req, res) => {
         })
 }
 
-module.exports = { createProjectType, editProjectType, deleteProjectType, searchProjectType };
+module.exports = {
+    createProjectType,
+    editProjectType,
+    deleteProjectType,
+    searchProjectType
+};

@@ -1,36 +1,56 @@
 const TechStack = require('../model/Tech_Stack');
 const mongoose = require('mongoose');
+const { getSuccess,
+    postSuccess,
+    putSuccess,
+    deleteSuccess,
+    searchSuccess } = require('../helper/Config_Message');
 
 const createTechStack = async (req, res) => {
     try {
         console.log(req.body);
         const record = await TechStack.create({ ...req.body });
-        res.json({ record, message: 'create successfully!', status: 200 });
+        res.json(postSuccess(record));
     } catch (error) {
         console.log(error.message);
-        res.json({ message: 'create failed!' })
+        res.json(error.message)
     }
 }
 
 const editTechStack = async (req, res) => {
-    const { id } = req.params;
-    await TechStack.findByIdAndUpdate(id, { ...req.body });
-    return res.json({ message: 'Updated TechStack successfully!' });
+    try {
+        const { id } = req.params;
+        const data = await TechStack.findByIdAndUpdate(id, { ...req.body });
+        res.json(putSuccess(data));
+    } catch (error) {
+        res.json(error.message)
+    }
 }
 
 const deleteTechStack = async (req, res) => {
-    const { id } = req.params;
-    await TechStack.findByIdAndDelete(id);
-    return res.json({ message: 'delete successfully!' })
+    try {
+        const { id } = req.params;
+        await TechStack.findByIdAndDelete(id);
+        res.json(deleteSuccess(data));
+    } catch (error) {
+        res.json(error.message)
+    }
 }
 
 const searchTechStack = async (req, res) => {
-    const q = req.query.name;
-    console.log(q);
-    TechStack.find({ name: { $regex: q, $options: '$i' } })
-        .then(data => {
-            res.json(data)
-        })
+    try {
+        const q = req.query.name;
+        console.log(q);
+        const data = await TechStack.find({ name: { $regex: q, $options: '$i' } })
+        res.json(searchSuccess(data));
+    } catch (error) {
+        res.json(error.message)
+    }
 }
 
-module.exports = { createTechStack, editTechStack, deleteTechStack, searchTechStack };
+module.exports = {
+    createTechStack,
+    editTechStack,
+    deleteTechStack,
+    searchTechStack
+};
