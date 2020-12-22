@@ -4,6 +4,7 @@ const Tech_Stack = require('../model/Tech_Stack');
 const errorhandler = require('errorhandler');
 const Skill = require('../model/Skill');
 const Project = require('../model/Project');
+const { logger } = require('../helper/Winston');
 const { getSuccess,
     postSuccess,
     putSuccess,
@@ -15,7 +16,8 @@ const createStaff = async (req, res) => {
         const record = await Staff.create({ ...req.body });
         res.json(postSuccess(record));
     } catch (error) {
-        res.json(error.message)
+        res.json(error.message);
+        logger.error(error.message);
     }
 }
 
@@ -31,6 +33,7 @@ const getStaff = async (req, res) => {
         res.json(getSuccess({ record, projectrecord, skillrecord }));
     } catch (error) {
         res.json(error.message);
+        logger.error(error.message);
     }
 }
 const editStaff = async (req, res) => {
@@ -40,6 +43,7 @@ const editStaff = async (req, res) => {
         res.json(putSuccess(data));
     } catch (error) {
         res.json(error.message);
+        logger.error(error.message);
     }
 }
 
@@ -50,6 +54,7 @@ const deleteStaff = async (req, res) => {
         res.json(deleteSuccess(data));
     } catch (error) {
         res.json(error.message);
+        logger.error(error.message);
     }
 }
 
@@ -60,6 +65,7 @@ const searchStaff = async (req, res) => {
         res.json(searchSuccess(data));
     } catch (error) {
         res.json(error.message);
+        logger.error(error.message);
     }
 }
 module.exports = {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const { logger } = require('./Winston');
 
 mongoose.Promise = global.Promise;
 const connectDB = async (err) => {
@@ -12,6 +12,7 @@ const connectDB = async (err) => {
         console.log("Connect successfully!!");
     } catch (err) {
         console.log(err);
+        logger.error(error.message);
     }
 };
 

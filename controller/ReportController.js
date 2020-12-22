@@ -6,12 +6,9 @@ const Department = require('../model/Department');
 const Project = require('../model/Project');
 const moment = require('moment');
 const { Count } = require('../helper/LengthArray');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess,
-    notFound } = require('../helper/Config_Message');
+const { getSuccess } = require('../helper/Config_Message');
+const { logger } = require('../helper/Winston');
+
 
 const CountProject = async (req, res) => {
     try {
@@ -34,6 +31,7 @@ const CountProject = async (req, res) => {
             return res.status(404).json({
                 message: 'Could not retrieve Project'
             })
+            logger.error(error.message);
         }
         res.status(200).json({
             message: 'success',
@@ -44,6 +42,27 @@ const CountProject = async (req, res) => {
         return res.status(500).json({
             error: error.message
         });
+        logger.error(error.message);
     }
 }
-module.exports = { CountProject };
+
+const StaffFill = async (req, res) => {
+    try {
+        const data = await Staff.find();
+        const len = Count(data);
+        if (len <= 0) {
+            return res.status(404).json({
+                message: 'Could not retrieve Staff'
+            })
+        }
+        res.status(200).json({
+            message: 'success',
+            data: { data, len }
+        })
+    } catch (error) {
+        res.json(error.message);
+        logger.error(error.message);
+    }
+}
+
+module.exports = { CountProject, StaffFill };

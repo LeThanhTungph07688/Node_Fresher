@@ -7,12 +7,7 @@ const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenLife = process.env.REFRESH_TOKEN_LIFE;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess,
-    notFound } = require('../helper/Config_Message');
+
 
 const signUp = async (req, res) => {
     try {
@@ -50,7 +45,6 @@ const refreshToken = async (req, res) => {
         try {
             // Verify kiểm tra tính hợp lệ của  refreshToken 
             const decoded = await jwtHelper.verifyToken(refreshTokenFromClient, refreshTokenSecret);
-
             user = decoded.data;
             const accessToken = await jwtHelper.generateToken(user, accessTokenSecret, accessTokenLife);
             // gửi token mới về cho người dùng

@@ -2,53 +2,76 @@ const mongoose = require('mongoose');
 const Department = require('../model/Department');
 const Tech_Stack = require('../model/Tech_Stack');
 const Staff = require('../model/Staff');
+const { logger } = require('../helper/Winston');
+const { getSuccess,
+    postSuccess,
+    putSuccess,
+    deleteSuccess,
+    searchSuccess } = require('../helper/Config_Message');
 
 
 const createDepartment = async (req, res) => {
     try {
         const record = await Department.create({ ...req.body });
-        res.json({ record });
+        res.json(postSuccess(record));
     } catch (error) {
-        console.log(error.message);
-        res.json(1)
+        res.json(error.message);
+        logger.error(error.message);
     }
 }
 
 const getDepartment = async (req, res) => {
-    const { id } = req.params;
-    const record = await Department.findById(id);
-    const tech_Stackrecord = await Tech_Stack.find(
-        {
-            _id: { $in: record.tech_stack }
-        },
-    );
-    const staffrecord = await Staff.find(
-        {
-            _id: { $in: record.staff }
-        },
-    );
-    res.json({ record, tech_Stackrecord, staffrecord });
+    try {
+        const { id } = req.params;
+        const record = await Department.findById(id);
+        const tech_Stackrecord = await Tech_Stack.find(
+            {
+                _id: { $in: record.tech_stack }
+            },
+        );
+        const staffrecord = await Staff.find(
+            {
+                _id: { $in: record.staff }
+            },
+        );
+        res.json(getSuccess({ record, tech_Stackrecord, staffrecord }));
+    } catch (error) {
+        res.json(error.message);
+        logger.error(error.message);
+    }
 }
 
 const editDepartment = async (req, res) => {
-    const { id } = req.params;
-    await Department.findByIdAndUpdate(id, { ...req.body });
-    return res.json({ message: 'Updated TechStack successfully!' });
+    try {
+        const { id } = req.params;
+        const data = await Department.findByIdAndUpdate(id, { ...req.body });
+        res.json(putSuccess(data));
+    } catch (error) {
+        res.json(error.message);
+        logger.error(error.message);
+    }
 }
 
 const deleteDepartment = async (req, res) => {
-    const { id } = req.params;
-    await Department.findByIdAndDelete(id);
-    return res.json({ message: 'delete successfully!' })
+    try {
+        const { id } = req.params;
+        const data = await Department.findByIdAndDelete(id);
+        res.json(deleteSuccess(data));
+    } catch (error) {
+        res.json(error.message);
+        logger.error(error.message);
+    }
 }
 
 const searchDepartment = async (req, res) => {
-    const q = req.query.mission;
-    console.log(q);
-    Department.find({ mission: { $regex: q, $options: '$i' } })
-        .then(data => {
-            res.json(data)
-        })
+    try {
+        const q = req.query.name;
+        const data = await Department.find({ name: { $regex: q, $options: '$i' } });
+        res.json(searchSuccess(data));
+    } catch (error) {
+        res.json(error.message);
+        logger.error(error.message);
+    }
 }
 
 module.exports = {

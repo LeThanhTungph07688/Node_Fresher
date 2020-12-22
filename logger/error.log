@@ -1,0 +1,5 @@
+{"message":"Cast to ObjectId failed for value \"5fd9db2278f5cc41b0583afee\" at path \"_id\" for model \"Staff\"","level":"error"}
+{"message":"Cannot read property 'project' of null","level":"error"}
+{"message":"Cast to ObjectId failed for value \"5fd6e01dbaba0a3630e18cb66\" at path \"_id\" for model \"Staff\"","level":"error"}
+{"message":"Cast to ObjectId failed for value \"5fd035389f5bf507245275f22\" at path \"_id\" for model \"Project\"","level":"error"}
+{"message":"Operation `projecttypes.find()` buffering timed out after 10000ms","level":"error"}

@@ -5,7 +5,7 @@ const { createCustomer,
     deleteCustomer,
     searchCustomer } = require('../controller/CustomerController');
 
-// router.use(require('../middleware/tokenChecker'));
+
 
 router.post('/customers', createCustomer);
 router.put('/customers/:id', editCustomer);
