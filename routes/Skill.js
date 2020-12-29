@@ -4,15 +4,17 @@ const { createSkill,
     getSkill,
     editSkill,
     deleteSkill,
+    getSkillId,
     searchSkill } = require('../controller/SkillController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
-
-router.post('/skills', createSkill);
-router.get('/skills/:id', getSkill);
-router.put('/skills/:id', editSkill);
-router.delete('/skills/:id', deleteSkill);
-router.get('/skills', searchSkill);
-
+router.route('/skills')
+    .post(AuthMiddleware.isAuth, createSkill)
+    .get(AuthMiddleware.isAuth, getSkill)
+router.route('/skills/:id')
+    .get(AuthMiddleware.isAuth, getSkillId)
+    .put(AuthMiddleware.isAuth, editSkill)
+    .delete(AuthMiddleware.isAuth, deleteSkill)
 
 module.exports = router;

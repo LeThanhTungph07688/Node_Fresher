@@ -5,7 +5,6 @@ const ProjectType = require('../model/ProjectType');
 const Department = require('../model/Department');
 const Project = require('../model/Project');
 const moment = require('moment');
-const { Count } = require('../helper/LengthArray');
 const { getSuccess } = require('../helper/Config_Message');
 const { logger } = require('../helper/Winston');
 
@@ -26,7 +25,7 @@ const CountProject = async (req, res) => {
                 $lt: new Date(new Date(endDate).setHours(23, 59, 59))
             }
         }).sort({ createdAt: 'asc' });
-        const len = Count(findProject);
+        const len = findProject.length;
         if (len <= 0) {
             return res.status(404).json({
                 message: 'Could not retrieve Project'
@@ -49,7 +48,7 @@ const CountProject = async (req, res) => {
 const StaffFill = async (req, res) => {
     try {
         const data = await Staff.find();
-        const len = Count(data);
+        const len = data.length;
         if (len <= 0) {
             return res.status(404).json({
                 message: 'Could not retrieve Staff'

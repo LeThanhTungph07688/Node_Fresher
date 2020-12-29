@@ -3,14 +3,21 @@ const router = express.Router();
 const { createTechStack,
     editTechStack,
     deleteTechStack,
-    searchTechStack } = require('../controller/Tech_StackController');
+    searchTechStack,
+    listTechStack,
+    getTechStackId } = require('../controller/Tech_StackController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
+router.route('/techstacks')
+    .post(AuthMiddleware.isAuth, createTechStack)
+    .get(AuthMiddleware.isAuth, listTechStack)
 
-router.post('/techstacks', createTechStack);
-router.put('/techstacks/:id', editTechStack);
-router.delete('/techstacks/:id', deleteTechStack);
-router.get('/techstacks', searchTechStack);
+router.route('/techstackss').get(AuthMiddleware.isAuth, searchTechStack)
 
+router.route('/techstacks/:id')
+    .put(AuthMiddleware.isAuth, editTechStack)
+    .delete(AuthMiddleware.isAuth, deleteTechStack)
+    .get(AuthMiddleware.isAuth, getTechStackId);
 
 module.exports = router;

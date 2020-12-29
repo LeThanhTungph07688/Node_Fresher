@@ -1,64 +1,61 @@
 const Staff = require('../model/Staff');
-const mongoose = require('mongoose');
 const Tech_Stack = require('../model/Tech_Stack');
-const errorhandler = require('errorhandler');
 const Skill = require('../model/Skill');
 const Project = require('../model/Project');
-const { logger } = require('../helper/Winston');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
+const {
+    getAll,
+    insertStaff,
+    getById,
+    updateStaff,
+    removeStaff
+} = require('../service/Staff.service');
 
-const createStaff = async (req, res) => {
+const createStaff = async (req, res, next) => {
     try {
-        const record = await Staff.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await insertStaff(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
-}
+};
 
-const getStaff = async (req, res) => {
+const getStaff = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const record = await Staff.findById(id);
-        const projectrecord = await Project.find(
-            { _id: { $in: record.project } },
-        );
-        const skillrecord = await Skill.find(
-            { _id: { $in: record.skill } });
-        res.json(getSuccess({ record, projectrecord, skillrecord }));
+        const data = await getAll();
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
-}
-const editStaff = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const data = await Staff.findByIdAndUpdate(id, { ...req.body });
-        res.json(putSuccess(data));
-    } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
-    }
-}
+};
 
-const deleteStaff = async (req, res) => {
+const getStaffId = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Staff.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
-}
+};
 
-const searchStaff = async (req, res) => {
+const editStaff = async (req, res, next) => {
+    try {
+        const data = await updateStaff(req.params.id, req.body);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
+    }
+};
+
+const deleteStaff = async (req, res, next) => {
+    try {
+        const data = await removeStaff(req.params.id);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
+    }
+};
+
+const searchStaff = async (req, res, next) => {
     try {
         const q = req.query.name;
         const data = await Staff.find({ name: { $regex: q, $options: '$i' } });
@@ -67,10 +64,11 @@ const searchStaff = async (req, res) => {
         res.json(error.message);
         logger.error(error.message);
     }
-}
+};
 module.exports = {
     createStaff,
     getStaff,
+    getStaffId,
     editStaff,
     deleteStaff,
     searchStaff

@@ -2,15 +2,20 @@ const express = require('express');
 const router = express.Router();
 const { createCustomer,
     editCustomer,
-    deleteCustomer,
-    searchCustomer } = require('../controller/CustomerController');
+    searchCustomer,
+    removeCustomer,
+    listCustomer,
+    listOne } = require('../controller/CustomerController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
+router.route('/customers')
+    .post(AuthMiddleware.isAuth, createCustomer)
+    .get(AuthMiddleware.isAuth, listCustomer)
 
-router.post('/customers', createCustomer);
-router.put('/customers/:id', editCustomer);
-router.delete('/customers/:id', deleteCustomer);
-router.get('/customers', searchCustomer);
-
+router.route('/customers/:id')
+    .put(AuthMiddleware.isAuth, editCustomer)
+    .delete(AuthMiddleware.isAuth, removeCustomer)
+    .get(AuthMiddleware.isAuth, listOne)
 
 module.exports = router;

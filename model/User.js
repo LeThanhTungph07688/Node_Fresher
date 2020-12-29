@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 const UserSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true }
+    // role: { type: String, required: true }
 })
-// Băm mật khẩu trước khi lưu
 UserSchema.pre(
     'save',
     async function (next) {
@@ -15,7 +15,6 @@ UserSchema.pre(
         next();
     }
 );
-//So sánh mật khẩu 
 UserSchema.methods.isValidPassword = async function (password) {
     const user = this;
     const compare = await bcrypt.compare(password, user.password);

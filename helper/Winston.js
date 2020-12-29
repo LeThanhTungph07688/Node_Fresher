@@ -8,7 +8,7 @@ const logger = winston.createLogger({
     ]
 });
 
-// chỉ ghi log ra console nếu không phải là môi trường production
+
 if (process.env.NODE_ENV !== 'production') {
     logger.add(new winston.transports.Console({
         format: winston.format.simple()

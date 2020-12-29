@@ -4,15 +4,19 @@ const { createProjectType,
     editProjectType,
     deleteProjectType,
     searchProjectType,
-    listProjectType } = require('../controller/PojectTypeController');
+    listProjectType,
+    getProjectTypeId } = require('../controller/PojectTypeController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
+router.get('/projectTypess', AuthMiddleware.isAuth, searchProjectType);
 
-router.post('/projectTypes', createProjectType);
-router.put('/projectTypes/:id', editProjectType);
-router.delete('/projectTypes/:id', deleteProjectType);
-router.get('/projectTypess', searchProjectType);
-router.get('/projectTypes', listProjectType);
-
+router.route('/projectTypes')
+    .post(AuthMiddleware.isAuth, createProjectType)
+    .get(AuthMiddleware.isAuth, listProjectType)
+router.route('/projectTypes/:id')
+    .put(AuthMiddleware.isAuth, editProjectType)
+    .delete(AuthMiddleware.isAuth, deleteProjectType)
+    .get(AuthMiddleware.isAuth, getProjectTypeId)
 
 module.exports = router;

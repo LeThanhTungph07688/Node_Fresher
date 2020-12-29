@@ -6,10 +6,7 @@ const Schema = mongoose.Schema;
 const SkillSchema = new Schema({
     experience: String,
     staff: [{ type: Schema.Types.ObjectId, ref: Staff }],
-    tech_stack: { type: Schema.Types.ObjectId, ref: Tech_Stack },
-},
-    {
-        timestamps: true
-    });
+    tech_stack: [{ type: Schema.Types.ObjectId, ref: Tech_Stack }],
+});
 
 module.exports = mongoose.model('Skill', SkillSchema);

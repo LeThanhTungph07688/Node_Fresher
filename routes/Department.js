@@ -4,15 +4,18 @@ const { createDepartment,
     editDepartment,
     deleteDepartment,
     searchDepartment,
-    getDepartment } = require('../controller/DepartmentController');
+    getDepartment,
+    getSkillId } = require('../controller/DepartmentController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
+router.route('/departments')
+    .post(AuthMiddleware.isAuth, createDepartment)
+    .get(AuthMiddleware.isAuth, getDepartment);
 
-router.post('/departments', createDepartment);
-router.get('/departments/:id', getDepartment);
-router.put('/departments/:id', editDepartment);
-router.delete('/departments/:id', deleteDepartment);
-router.get('/departments', searchDepartment);
-
+router.route('/departments/:id')
+    .get(AuthMiddleware.isAuth, getSkillId)
+    .put(AuthMiddleware.isAuth, editDepartment).
+    delete(deleteDepartment);
 
 module.exports = router;

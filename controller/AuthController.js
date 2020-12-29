@@ -37,27 +37,20 @@ const login = async (req, res) => {
     }
 }
 const refreshToken = async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    // User gửi mã refresh token kèm theo trong body
     const refreshTokenFromClient = req.body.refreshToken;
-    // Nếu như tồn tại refreshToken truyền lên 
     if (refreshTokenFromClient && (tokenList[refreshTokenFromClient])) {
         try {
-            // Verify kiểm tra tính hợp lệ của  refreshToken 
             const decoded = await jwtHelper.verifyToken(refreshTokenFromClient, refreshTokenSecret);
-            user = decoded.data;
+            const user = await User.findOne({ email: req.body.email });
             const accessToken = await jwtHelper.generateToken(user, accessTokenSecret, accessTokenLife);
-            // gửi token mới về cho người dùng
             return res.status(200).json({ accessToken });
         } catch (error) {
-            res.status(403).json({
-                message: 'Invalid refresh token.',
-            });
+            res.status(403).json(error.message);
         }
     } else {
-        // Không tìm thấy token trong request
+
         return res.status(403).send({
-            message: 'No token provided.',
+            message: 'No token provided.'
         });
     }
 };

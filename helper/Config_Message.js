@@ -1,19 +1,25 @@
-const notFound = () => {
-    return {
-        message: 'Not Found',
-        message_code: 'INVALID',
-        status: 404
+class BaseError extends Error {
+    constructor(status, message_code, message) {
+        super(message, message_code, status);
+        this.message = message;
+        this.message_code = message_code;
+        this.status = status;
     }
 };
+
+const errorHandle = (status, message_code, message) => {
+    return ({ status, message_code, message });
+}
 
 const postSuccess = (data) => {
     return {
         message: 'Post Success',
-        message_code: 'POST SUCCESS',
+        message_code: 'POST_SUCCESS',
         status: 200,
         data,
     }
 };
+
 const putSuccess = (data) => {
     return {
         message: 'Put Success',
@@ -26,7 +32,7 @@ const putSuccess = (data) => {
 const getSuccess = (data) => {
     return {
         message: 'Get Success',
-        message_code: 'GET SUCCESS',
+        message_code: 'GET_SUCCESS',
         status: 200,
         data,
     }
@@ -35,7 +41,7 @@ const getSuccess = (data) => {
 const deleteSuccess = (data) => {
     return {
         message: 'Delete Success',
-        message_code: 'DELETE SUCCESS',
+        message_code: 'DELETE_SUCCESS',
         status: 200,
         data,
     }
@@ -43,20 +49,20 @@ const deleteSuccess = (data) => {
 const searchSuccess = (data) => {
     return {
         message: 'Search Success',
-        message_code: 'SEARCH SUCCESS',
+        message_code: 'SEARCH_SUCCESS',
         status: 200,
         data,
     }
 };
 
-
 module.exports = {
-    notFound,
     putSuccess,
     getSuccess,
     postSuccess,
     searchSuccess,
-    deleteSuccess
+    deleteSuccess,
+    BaseError,
+    errorHandle
 };
 
 

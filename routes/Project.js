@@ -4,15 +4,17 @@ const { createProject,
     getProject,
     editProject,
     deleteProject,
-    searchProject } = require('../controller/ProjectController');
+    searchProject,
+    getProjectId } = require('../controller/ProjectController');
 
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
-
-router.post('/projects', createProject);
-router.get('/projects/:id', getProject);
-router.put('/projects/:id', editProject);
-router.delete('/projects/:id', deleteProject);
-router.get('/projects', searchProject);
-
+router.route('/projects')
+    .post(AuthMiddleware.isAuth, createProject)
+    .get(AuthMiddleware.isAuth, searchProject)
+router.route('/projects/:id')
+    .get(AuthMiddleware.isAuth, getProjectId)
+    .put(AuthMiddleware.isAuth, editProject)
+    .delete(AuthMiddleware.isAuth, deleteProject)
 
 module.exports = router;

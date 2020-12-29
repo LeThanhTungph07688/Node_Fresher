@@ -1,43 +1,54 @@
 const Customer = require('../model/Customer');
 const mongoose = require('mongoose');
 const { logger } = require('../helper/Winston');
-const {
-    postSuccess,
+const { insertCustomer,
+    updateCustomer,
+    deleteCustomer,
+    getAll,
+    getById } = require('../service/Customer.service');
 
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
-
-
-const createCustomer = async (req, res) => {
+const createCustomer = async (req, res, next) => {
     try {
-        const record = await Customer.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await insertCustomer(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
+};
 
-}
-
-const editCustomer = async (req, res) => {
+const editCustomer = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Customer.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await updateCustomer(req.params.id, req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const deleteCustomer = async (req, res) => {
+const removeCustomer = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Department.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await deleteCustomer(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
+    }
+}
+
+const listCustomer = async (req, res, next) => {
+    try {
+        const data = await getAll();
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const listOne = async (req, res, next) => {
+    try {
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
     }
 }
 
@@ -55,6 +66,8 @@ const searchCustomer = async (req, res) => {
 module.exports = {
     createCustomer,
     editCustomer,
-    deleteCustomer,
+    removeCustomer,
+    listCustomer,
+    listOne,
     searchCustomer
 };

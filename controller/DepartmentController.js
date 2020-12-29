@@ -1,58 +1,51 @@
-const mongoose = require('mongoose');
 const Department = require('../model/Department');
 const Tech_Stack = require('../model/Tech_Stack');
 const Staff = require('../model/Staff');
-const { logger } = require('../helper/Winston');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
+const {
+    getAll,
+    insertDepartment,
+    getById,
+    updateDepartment,
+    removeDepartment
+} = require('../service/Department.service');
 
-
-const createDepartment = async (req, res) => {
+const createDepartment = async (req, res, next) => {
     try {
-        const record = await Department.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await insertDepartment(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const getDepartment = async (req, res) => {
+const getDepartment = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const record = await Department.findById(id);
-        const tech_Stackrecord = await Tech_Stack.find(
-            {
-                _id: { $in: record.tech_stack }
-            },
-        );
-        const staffrecord = await Staff.find(
-            {
-                _id: { $in: record.staff }
-            },
-        );
-        res.json(getSuccess({ record, tech_Stackrecord, staffrecord }));
+        const data = await getAll();
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const editDepartment = async (req, res) => {
+const getSkillId = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Department.findByIdAndUpdate(id, { ...req.body });
-        res.json(putSuccess(data));
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const deleteDepartment = async (req, res) => {
+const editDepartment = async (req, res, next) => {
+    try {
+        const data = await updateDepartment(req.params.id, req.body);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const deleteDepartment = async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = await Department.findByIdAndDelete(id);
@@ -63,7 +56,7 @@ const deleteDepartment = async (req, res) => {
     }
 }
 
-const searchDepartment = async (req, res) => {
+const searchDepartment = async (req, res, next) => {
     try {
         const q = req.query.name;
         const data = await Department.find({ name: { $regex: q, $options: '$i' } });
@@ -79,5 +72,6 @@ module.exports = {
     editDepartment,
     deleteDepartment,
     searchDepartment,
-    getDepartment
+    getDepartment,
+    getSkillId
 };

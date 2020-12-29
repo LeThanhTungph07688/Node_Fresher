@@ -1,55 +1,61 @@
 const TechStack = require('../model/Tech_Stack');
-const mongoose = require('mongoose');
-const { logger } = require('../helper/Winston');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
+const { getAll,
+    createTech,
+    getById,
+    updateTech,
+    deleteTech,
+    searchTech } = require('../service/TechStack.service');
 
-
-const createTechStack = async (req, res) => {
+const createTechStack = async (req, res, next) => {
     try {
-        console.log(req.body);
-        const record = await TechStack.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await createTech(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
+    }
+};
+
+const editTechStack = async (req, res, next) => {
+    try {
+        const data = await updateTech(req.params.id, req.body);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
     }
 }
 
-const editTechStack = async (req, res) => {
+const deleteTechStack = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await TechStack.findByIdAndUpdate(id, { ...req.body });
-        res.json(putSuccess(data));
+        const data = await deleteTech(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
+    }
+};
+
+const listTechStack = async (req, res, next) => {
+    try {
+        const data = await getAll();
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
+    }
+}
+const getTechStackId = async (req, res, next) => {
+    try {
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
     }
 }
 
-const deleteTechStack = async (req, res) => {
+const searchTechStack = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        await TechStack.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await searchTech(req.query.name);
+        res.status(data.status).json(data);
     } catch (error) {
         res.json(error.message);
-        logger.error(error.message);
-    }
-}
-
-const searchTechStack = async (req, res) => {
-    try {
-        const q = req.query.name;
-        console.log(q);
-        const data = await TechStack.find({ name: { $regex: q, $options: '$i' } })
-        res.json(searchSuccess(data));
-    } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
     }
 }
 
@@ -57,5 +63,7 @@ module.exports = {
     createTechStack,
     editTechStack,
     deleteTechStack,
-    searchTechStack
+    searchTechStack,
+    listTechStack,
+    getTechStackId
 };

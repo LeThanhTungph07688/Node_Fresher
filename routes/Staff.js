@@ -4,17 +4,17 @@ const { createStaff,
     getStaff,
     editStaff,
     deleteStaff,
+    getStaffId,
     searchStaff } = require('../controller/StaffController');
 
 const AuthMiddleware = require('../middleware/AuthMiddleware');
 
-
-router.post('/staffs', AuthMiddleware.isAuth, createStaff);
-router.get('/staffs/:id', getStaff);
-// router.get('/staffs/:id', AuthMiddleware.isAuth, getStaff);
-router.put('/staffs/:id', editStaff);
-router.delete('/staffs/:id', deleteStaff);
-router.get('/staffs', searchStaff);
-
+router.route('/staffs')
+    .post(AuthMiddleware.isAuth, createStaff)
+    .get(AuthMiddleware.isAuth, getStaff)
+router.route('/staffs/:id')
+    .get(AuthMiddleware.isAuth, getStaffId)
+    .put(AuthMiddleware.isAuth, editStaff)
+    .delete(AuthMiddleware.isAuth, deleteStaff)
 
 module.exports = router;

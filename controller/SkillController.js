@@ -1,74 +1,60 @@
 const Staff = require('../model/Staff');
-const mongoose = require('mongoose');
 const Tech_Stack = require('../model/Tech_Stack');
 const Skill = require('../model/Skill');
-const { logger } = require('../helper/Winston');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
+const {
+    getAll,
+    insertSkill,
+    getById,
+    updateSkill,
+    removeSkill
+} = require('../service/Skill.service');
 
-
-
-const createSkill = async (req, res) => {
+const createSkill = async (req, res, next) => {
     try {
-        const record = await Skill.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await insertSkill(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
+    }
+};
+
+const getSkill = async (req, res, next) => {
+    try {
+        const data = await getAll();
+        res.status(data.status).json(data);
+    } catch (error) {
+        return next(error);
     }
 }
 
-const getSkill = async (req, res) => {
+const getSkillId = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const record = await Skill.findById(id);
-        const staffrecord = await Staff.find(
-            {
-                _id: { $in: record.staff }
-            },
-        );
-        const skillrecord = await Tech_Stack
-            .find(
-                {
-                    _id: { $in: record.tech_stack }
-                },
-                'name')
-            .populate('_id', 'name').exec((err, techStack) => {
-                if (err) return handleError(err);
-                res.json(getSuccess({ record, skillrecord, techStack, staffrecord }));
-            });
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const editSkill = async (req, res) => {
+const editSkill = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Skill.findByIdAndUpdate(id, { ...req.body });
-        res.json(putSuccess(data));
+        const data = await updateSkill(req.params.id, req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const deleteSkill = async (req, res) => {
+const deleteSkill = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Skill.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await removeSkill(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const searchSkill = async (req, res) => {
+const searchSkill = async (req, res, next) => {
     try {
         const q = req.query.experience;
         console.log(q);
@@ -84,6 +70,7 @@ const searchSkill = async (req, res) => {
 module.exports = {
     createSkill,
     getSkill,
+    getSkillId,
     editSkill,
     deleteSkill,
     searchSkill

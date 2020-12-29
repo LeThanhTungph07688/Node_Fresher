@@ -1,81 +1,47 @@
 const Staff = require('../model/Staff');
 const mongoose = require('mongoose');
 const Tech_Stack = require('../model/Tech_Stack');
-const ProjectType = require('../model/ProjectType');
-const Department = require('../model/Department');
-const Project = require('../model/Project');
-const { logger } = require('../helper/Winston');
-const { getSuccess,
-    postSuccess,
-    putSuccess,
-    deleteSuccess,
-    searchSuccess } = require('../helper/Config_Message');
+const { searchSuccess } = require('../helper/Config_Message');
+const { updateProject, insertProject, removeProject, getById } = require('../service/Project.service');
 
 
-const createProject = async (req, res) => {
+const createProject = async (req, res, next) => {
     try {
-        const record = await Project.create({ ...req.body });
-        res.json(postSuccess(record));
+        const data = await insertProject(req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const getProject = async (req, res) => {
+const getProjectId = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const record = await Project.findById(id);
-        const tech_Stackrecord = await Tech_Stack.find(
-            {
-                _id: { $in: record.tech_stack }
-            },
-        );
-        const projectTyperecord = await ProjectType.find(
-            {
-                _id: { $in: record.project_type }
-            },
-        );
-        const staffrecord = await Staff.find(
-            {
-                _id: { $in: record.staff }
-            },
-        );
-        const departmentrecord = await Department.find(
-            {
-                _id: { $in: record.department }
-            },
-        );
-        res.json(getSuccess({ record, tech_Stackrecord, projectTyperecord, staffrecord, departmentrecord }));
+        const data = await getById(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const editProject = async (req, res) => {
+const editProject = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Project.findByIdAndUpdate(id, { ...req.body });
-        return res.json(putSuccess(data));
+        const data = await updateProject(req.params.id, req.body);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const deleteProject = async (req, res) => {
+const deleteProject = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const data = await Project.findByIdAndDelete(id);
-        res.json(deleteSuccess(data));
+        const data = await removeProject(req.params.id);
+        res.status(data.status).json(data);
     } catch (error) {
-        res.json(error.message);
-        logger.error(error.message);
+        return next(error);
     }
 }
 
-const searchProject = async (req, res) => {
+const searchProject = async (req, res, next) => {
     try {
         const q = req.query.status;
         const data = await Project.find({ status: { $regex: q, $options: '$i' } });
@@ -89,7 +55,7 @@ const searchProject = async (req, res) => {
 
 module.exports = {
     createProject,
-    getProject,
+    getProjectId,
     editProject,
     deleteProject,
     searchProject

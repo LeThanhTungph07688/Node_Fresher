@@ -16,4 +16,14 @@ const connectDB = async (err) => {
     }
 };
 
-module.exports = { connectDB };
+
+
+const isValidId = (id) => {
+    return mongoose.Types.ObjectId.isValid(id);
+}
+module.exports = {
+    connectDB,
+    User: require('../model/User'),
+    RefreshToken: require('../model/Token'),
+    isValidId,
+};
