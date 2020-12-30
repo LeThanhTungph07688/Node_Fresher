@@ -30,17 +30,17 @@ const getById = async (id) => {
         if (!data) {
             return errorHandle(404, 'INVALID', 'Not Found');
         }
-        const tech_stackRecord = await Tech_Stack.find(
+        const techStackRecord = await Tech_Stack.find(
             {
                 _id: { $in: data.tech_stack }
             }, 'name'
-        ).populate({ path: 'tech_stackRecord', select: 'name' });
+        ).populate({ path: 'techStackRecord', select: 'name' });
         const staffRecord = await Staff.find(
             {
                 _id: { $in: data.staff }
             }, 'name'
         ).populate({ path: 'staffRecord', select: 'name' });
-        return getSuccess({ data, tech_stackRecord, staffRecord });
+        return getSuccess({ data, techStackRecord, staffRecord });
     } catch (error) {
         throw error;
     }

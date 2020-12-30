@@ -6,7 +6,7 @@ const Tech_Stack = require('./Tech_Stack');
 const Schema = mongoose.Schema;
 
 const ProjectSchema = new Schema({
-
+    name: String,
     tech_stack: [{ type: Schema.Types.ObjectId, ref: Tech_Stack }],
     project_type: { type: Schema.Types.ObjectId, ref: ProjectType },
     staff: [{ type: Schema.Types.ObjectId, ref: Staff }],

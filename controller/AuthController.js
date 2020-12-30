@@ -1,3 +1,50 @@
+// const User = require('../model/User');
+// const mongoose = require('mongoose');
+// const bcrypt = require('bcrypt');
+// const jwtHelper = require("../helper/jwt.helper");
+// const tokenList = {};
+// const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
+// const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+// const refreshTokenLife = process.env.REFRESH_TOKEN_LIFE;
+// const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+
+// const {
+//     signUpUser,
+//     loginUser,
+//     refreshTokenUser
+// } = require('../service/Auth.service');
+
+// const signUp = async (req, res, next) => {
+//     try {
+//         console.log(req.body);
+//         const data = await signUpUser(req.body);
+//         res.status(data.status).json(data);
+//     } catch (error) {
+//         res.json(error)
+//     }
+// };
+
+// const login = async (req, res, next) => {
+//     try {
+//         const data = await loginUser(req.body);
+//         res.status(data.status).json(data);
+//     } catch (error) {
+//         return next(error);
+//     }
+// }
+// const refreshToken = async (req, res, next) => {
+//     try {
+//         const data = await refreshTokenUser(req.body);
+//         res.status(data.status).json(data);
+//     } catch (error) {
+//         return next(error);
+//     }
+// };
+// module.exports = {
+//     signUp,
+//     login,
+//     refreshToken
+// };
 const User = require('../model/User');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -59,5 +106,4 @@ module.exports = {
     login,
     refreshToken
 };
-
 

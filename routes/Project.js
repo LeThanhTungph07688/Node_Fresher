@@ -12,6 +12,9 @@ const AuthMiddleware = require('../middleware/AuthMiddleware');
 router.route('/projects')
     .post(AuthMiddleware.isAuth, createProject)
     .get(AuthMiddleware.isAuth, searchProject)
+
+router.route('/projectss').get(AuthMiddleware.isAuth, getProject)
+
 router.route('/projects/:id')
     .get(AuthMiddleware.isAuth, getProjectId)
     .put(AuthMiddleware.isAuth, editProject)

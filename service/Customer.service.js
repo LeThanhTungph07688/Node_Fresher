@@ -24,7 +24,7 @@ const insertCustomer = async (payload) => {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const updateCustomer = async (id, payload) => {
     try {

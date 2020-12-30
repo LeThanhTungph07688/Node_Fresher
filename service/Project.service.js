@@ -1,4 +1,5 @@
 const Project = require('../model/Project');
+const express = require('express');
 const { findOne,
     findList,
     insert,
@@ -8,7 +9,6 @@ const {
     putSuccess,
     getSuccess,
     postSuccess,
-    searchSuccess,
     deleteSuccess,
     errorHandle
 } = require('../helper/Config_Message');
@@ -16,10 +16,43 @@ const Tech_Stack = require('../model/Tech_Stack');
 const ProjectType = require('../model/ProjectType');
 const Staff = require('../model/Staff');
 const Department = require('../model/Department');
+const populate = ({ path: 'techStackRecord', select: 'name' },
+    { path: 'staffRecord', select: 'name' },
+    { path: 'projectTypeRecord', select: 'name' },
+    { path: 'departmentRecord', select: 'name' });
+const { calculateLimitAndOffset, paginate } = require('paginate-info');
 
-const getAll = async () => {
+const getAll = async (payload) => {
     try {
-        const data = await findList(Project);
+        const currentPage = payload.currentPage;
+        const pageSize = payload.pageSize;
+        const count = await Project.estimatedDocumentCount();
+        const { limit, offset } = calculateLimitAndOffset(currentPage, pageSize);
+        console.log(currentPage);
+        if (currentPage <= 0 || pageSize <= 0) {
+            return errorHandle(404, 'INVALID', 'Not Found');
+        }
+        if (currentPage > count / pageSize) {
+            return errorHandle(404, 'INVALID', 'Not Found');
+        }
+        const data = await Project.find()
+            .limit(limit)
+            .skip(offset)
+            .sort('name');
+        const meta = paginate(currentPage, count, data, pageSize);
+        return getSuccess(data, meta);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const searchPro = async (payload) => {
+    try {
+        const q = payload;
+        const data = await findOne(Project, { status: { $regex: q, $options: '$i' } });
+        if (!data) {
+            return errorHandle(404, 'INVALID', 'Not Found');
+        }
         return getSuccess(data);
     } catch (error) {
         throw error;
@@ -32,29 +65,26 @@ const getById = async (id) => {
         if (!data) {
             return errorHandle(404, 'INVALID', 'Not Found');
         }
-        const tech_stackRecord = await Tech_Stack.find(
+        const techStackRecord = await Tech_Stack.find(
             {
                 _id: { $in: data.tech_stack }
-            }, 'name'
-        ).populate({ path: 'tech_stackRecord', select: 'name' });
+            }, 'name', populate);
         const staffRecord = await Staff.find(
             {
                 _id: { $in: data.staff }
-            }, 'name'
-        ).populate({ path: 'staffRecord', select: 'name' });
+            }, 'name', populate);
         const projectTypeRecord = await ProjectType.find(
             {
                 _id: { $in: data.project_type }
-            }, 'name'
-        ).populate({ path: 'projectTypeRecord', select: 'name' });
+            }, 'name', populate);
         const departmentRecord = await Department.find(
             {
                 _id: { $in: data.department }
-            }, 'name'
-        ).populate({ path: 'departmentRecord', select: 'name' });
+            }, 'name', populate);
         return getSuccess({
             data,
-            tech_stackRecord,
+            staffRecord,
+            techStackRecord,
             projectTypeRecord,
             departmentRecord
         });
@@ -65,6 +95,8 @@ const getById = async (id) => {
 
 const insertProject = async (payload) => {
     try {
+        const data = await findList(Project);
+
         const record = await insert(Project, payload);
         return postSuccess(record);
     } catch (error) {
@@ -103,5 +135,6 @@ module.exports = {
     insertProject,
     getById,
     updateProject,
-    removeProject
+    removeProject,
+    searchPro
 }
