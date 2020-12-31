@@ -33,13 +33,13 @@ const getAll = async (payload) => {
             return errorHandle(404, 'INVALID', 'Not Found');
         }
         if (currentPage > count / pageSize) {
-            return errorHandle(404, 'INVALID', 'Not Found');
+            return errorHandle(404, "INVALID", 'Not Found');
         }
         const data = await Project.find()
             .limit(limit)
             .skip(offset)
             .sort('name');
-        const meta = paginate(currentPage, count, data, pageSize);
+        const meta = paginate(currentPage, count, data, pageSize)
         return getSuccess(data, meta);
     } catch (error) {
         throw error;

@@ -6,7 +6,10 @@
   "scripts": {
     "postinstall": "env-install",
     "start": "nodemon --inspect app.js",
-    "test": "nodemon --exec \"mocha -R min\""
+    "eslint": "eslint *",
+    "compile": "./node_modules/.bin/babel src --out-dir dist --ignore '**/*.test.js'",
+    "test": "nodemon --exec \"mocha -R min\"",
+    "coverage": "nyc --reporter=html npm test"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +22,7 @@
     "@hapi/joi": "^17.1.1",
     "app-root-path": "^3.0.0",
     "bcrypt": "^5.0.0",
+    "babel-polyfill": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "chai": "^3.5.0",
